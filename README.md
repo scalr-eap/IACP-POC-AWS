@@ -26,10 +26,11 @@ Template is designed to be run from the CLI.
 1. Put the license file in ./license/license.json
 1. Put your private SSH key file in ./ssh/id_rsa. This shoudl be the private part of the key that will be added to the instance (var.ssh_key_name). Required by Terraform to run the installtion scripts.
 1. Ensure you have uploaded the public half of the SSH key to AWS.
-4. Set variable values to terraform.tfvars
+1. Set variable values to terraform.tfvars
   1. AMI: Either set linux_type to get latest AMI from the AWS market place, OR set ami and ami_owner to use a specific AMI
   2. Subnet is optional
   3. server_count can be ignored. Included for future use.
-5. Run `terraform apply`
+1. Set the tags map for any tags you require. The tenmplate sets a tag for the name. `Name={prefix}-iacp-server-0`
+1. Run `terraform apply`
 
 

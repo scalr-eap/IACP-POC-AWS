@@ -34,6 +34,7 @@ resource "aws_security_group" "scalr_sg" {
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
+
 }
 
 ###############################
@@ -51,4 +52,5 @@ resource "aws_security_group" "mysql_sg" {
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
+
 }

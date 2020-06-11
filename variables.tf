@@ -54,6 +54,12 @@ variable "name_prefix" {
   type = string
 }
 
+variable "tags" {
+  type = map
+  description = "Add a map of tags (key = value) to be added to the deployed resources."
+  default = null
+}
+
 variable server_count {
   type = number
   description = "Number of Scalr servers to run. Currentkly max = 1"

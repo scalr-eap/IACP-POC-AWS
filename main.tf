@@ -96,10 +96,10 @@ resource "aws_instance" "iacp_server" {
   vpc_security_group_ids  = [ data.aws_security_group.default_sg.id, aws_security_group.scalr_sg.id ]
   subnet_id               = var.subnet != "" ? var.subnet : element(tolist(data.aws_subnet_ids.scalr_ids.ids),count.index)
 
-  tags = {
-    Name = "${var.name_prefix}-iacp-server-${tostring(count.index)}"
-  }
-
+  tags = merge(
+    map( "Name", "${var.name_prefix}-iacp-server-${tostring(count.index)}"),
+    var.tags )
+  
   connection {
         host	= self.public_ip
         type     = "ssh"
@@ -125,6 +125,8 @@ resource "aws_ebs_volume" "iacp_vol" {
   availability_zone       = aws_instance.iacp_server[count.index].availability_zone
   type                    = "gp2"
   size                    = 50
+
+  tags = var.tags
 }
 
 resource "aws_volume_attachment" "iacp_attach" {

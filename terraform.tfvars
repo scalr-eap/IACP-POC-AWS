@@ -20,14 +20,19 @@ instance_type = "t3.xlarge"
 public = true
 
 # "The name of then public SSH key to be deployed to the servers. This must exist in AWS already"
-ssh_key_name = "{key-name}"
+ssh_key_name = "PeterG"
 
 # "The VPC to be used. Instance will be allocated to first subnet unless subnet is also set"
-vpc = "{vpc-id}"
+vpc = "{vpc}"
 
 # "(optional) Set a specific subnet. If left blank the first subnet in the VPC will be used"
 subnet = ""
 
 # "1-3 char prefix for instance names
-name_prefix = "{prefix}"
+name_prefix = "p99"
 
+# "Map of tags. Comment out if no tags needed".
+tags = {
+  "key1" = "value1"
+  "key2" = "value2"
+  }
