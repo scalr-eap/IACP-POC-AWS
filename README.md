@@ -1,6 +1,6 @@
 # IACP-POC-AWS
 
-This installs IaCP for a POC on AWS, currently on a single server.
+This installs IaCP for a POC on AWS, currently on a single server. Assumes VPC and subnet is pre-created.
 
 The following options are available.
 
