@@ -11,6 +11,81 @@ abort () {
   exit $1
 }
 
+detect_os ()
+{
+  if [[ ( -z "${os}" ) && ( -z "${dist}" ) ]]; then
+    if [ -e /etc/os-release ]; then
+      . /etc/os-release
+      os=${ID}
+      if [ "${os}" = "poky" ]; then
+        dist=`echo ${VERSION_ID}`
+      elif [ "${os}" = "sles" ]; then
+        dist=`echo ${VERSION_ID}`
+      elif [ "${os}" = "opensuse" ]; then
+        dist=`echo ${VERSION_ID}`
+      elif [ "${os}" = "opensuse-leap" ]; then
+        os=opensuse
+        dist=`echo ${VERSION_ID}`
+      else
+        dist=`echo ${VERSION_ID} | awk -F '.' '{ print $1 }'`
+      fi
+
+    elif [ `which lsb_release 2>/dev/null` ]; then
+      # get major version (e.g. '5' or '6')
+      dist=`lsb_release -r | cut -f2 | awk -F '.' '{ print $1 }'`
+
+      # get os (e.g. 'centos', 'redhatenterpriseserver', etc)
+      os=`lsb_release -i | cut -f2 | awk '{ print tolower($1) }'`
+
+    elif [ -e /etc/oracle-release ]; then
+      dist=`cut -f5 --delimiter=' ' /etc/oracle-release | awk -F '.' '{ print $1 }'`
+      os='ol'
+
+    elif [ -e /etc/fedora-release ]; then
+      dist=`cut -f3 --delimiter=' ' /etc/fedora-release`
+      os='fedora'
+
+    elif [ -e /etc/redhat-release ]; then
+      os_hint=`cat /etc/redhat-release  | awk '{ print tolower($1) }'`
+      if [ "${os_hint}" = "centos" ]; then
+        dist=`cat /etc/redhat-release | awk '{ print $3 }' | awk -F '.' '{ print $1 }'`
+        os='centos'
+      elif [ "${os_hint}" = "scientific" ]; then
+        dist=`cat /etc/redhat-release | awk '{ print $4 }' | awk -F '.' '{ print $1 }'`
+        os='scientific'
+      else
+        dist=`cat /etc/redhat-release  | awk '{ print tolower($7) }' | cut -f1 --delimiter='.'`
+        os='redhatenterpriseserver'
+      fi
+
+    else
+      aws=`grep -q Amazon /etc/issue`
+      if [ "$?" = "0" ]; then
+        dist='6'
+        os='aws'
+      else
+        unknown_os
+      fi
+    fi
+  fi
+
+  if [[ ( -z "${os}" ) || ( -z "${dist}" ) ]]; then
+    unknown_os
+  fi
+
+  # remove whitespace from OS and dist name
+  os="${os// /}"
+  dist="${dist// /}"
+
+  echo "Detected operating system as ${os}/${dist}."
+
+  if [ "${dist}" = "8" ]; then
+    _skip_pygpgme=1
+  else
+    _skip_pygpgme=0
+  fi
+}
+
 trap 'abort $? "$STEP" $LINENO' ERR
 
 TOKEN="${1}"
@@ -32,14 +107,21 @@ mount /dev/${DEVICE} /opt/scalr-server
 echo /dev/${DEVICE}  /opt/scalr-server ext4 defaults,nofail 0 2 >> /etc/fstab
 
 if which apt-get 2> /dev/null; then
-  STEP="curl to down load repo"
+  STEP="curl to download repo"
   curl -s https://${TOKEN}:@packagecloud.io/install/repositories/scalr/scalr-server-ee-staging/script.deb.sh | bash
 
   STEP="apt-get install scalr-server"
   apt-get install -y scalr-server
 else
-  STEP="curl to down load repo"
+  STEP="curl to download repo"
   curl -s https://${TOKEN}:@packagecloud.io/install/repositories/scalr/scalr-server-ee-staging/script.rpm.sh | bash
+
+  # There is a bug in packagecloud repo installer.
+  # On Amazon Linux 2 EL7 package should be used instead of EL6
+  if [ "${os}" = "amzn" ]; then
+      sed -i "s/el\/6/el\/7/g" /etc/yum.repos.d/scalr_scalr-server-ee.repo
+      yum clean all
+  fi
 
   STEP="yum install scalr-server"
   yum -y install scalr-server
