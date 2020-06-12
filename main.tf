@@ -217,10 +217,10 @@ resource "null_resource" "get_info" {
 }
 
 output "dns_name" {
-  value = aws_instance.iacp_server.*.public_dns
+  value = "https://${var.public == true ? aws_instance.iacp_server.0.public_dns : aws_instance.iacp_server.0.private_dns}"
 }
 output "scalr_iacp_server_public_ip" {
-  value = aws_instance.iacp_server.*.public_ip
+  value = aws_instance.iacp_server.0.public_ip
 }
 
 

@@ -57,7 +57,7 @@ variable "name_prefix" {
 variable "tags" {
   type = map
   description = "Add a map of tags (key = value) to be added to the deployed resources."
-  default = null
+  default = {}
 }
 
 variable server_count {

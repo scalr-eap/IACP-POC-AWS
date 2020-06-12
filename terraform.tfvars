@@ -33,6 +33,4 @@ name_prefix = "p99"
 
 # "Map of tags. Comment out if no tags needed".
 tags = {
-  "key1" = "value1"
-  "key2" = "value2"
   }

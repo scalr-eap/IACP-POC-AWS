@@ -95,6 +95,8 @@ DOMAIN_NAME="${3}"
 VOL2=$(echo $VOL | sed 's/-//')
 DEVICE=$(lsblk -o NAME,SERIAL | grep ${VOL2} | awk '{print $1}')
 
+# Using staging at the momemnt. Remove -staging when released
+REPO=scalr-server-ee-staging
 
 STEP="MKFS"
 mkfs -t ext4 /dev/${DEVICE}
@@ -102,24 +104,26 @@ mkfs -t ext4 /dev/${DEVICE}
 STEP="mkdir"
 mkdir /opt/scalr-server
 
-STEP="mount /opt/scalr-server"
+STEP="mount /opt/scalr-server"4
 mount /dev/${DEVICE} /opt/scalr-server
 echo /dev/${DEVICE}  /opt/scalr-server ext4 defaults,nofail 0 2 >> /etc/fstab
 
+detect_os
+
 if which apt-get 2> /dev/null; then
   STEP="curl to download repo"
-  curl -s https://${TOKEN}:@packagecloud.io/install/repositories/scalr/scalr-server-ee-staging/script.deb.sh | bash
+  curl -s https://${TOKEN}:@packagecloud.io/install/repositories/scalr/${REPO}/script.deb.sh | bash
 
   STEP="apt-get install scalr-server"
   apt-get install -y scalr-server
 else
   STEP="curl to download repo"
-  curl -s https://${TOKEN}:@packagecloud.io/install/repositories/scalr/scalr-server-ee-staging/script.rpm.sh | bash
+  curl -s https://${TOKEN}:@packagecloud.io/install/repositories/scalr/${REPO}/script.rpm.sh | bash
 
   # There is a bug in packagecloud repo installer.
   # On Amazon Linux 2 EL7 package should be used instead of EL6
   if [ "${os}" = "amzn" ]; then
-      sed -i "s/el\/6/el\/7/g" /etc/yum.repos.d/scalr_scalr-server-ee.repo
+      sed -i "s/el\/6/el\/7/g" /etc/yum.repos.d/scalr_${REPO}.repo
       yum clean all
   fi
 
