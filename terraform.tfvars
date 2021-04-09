@@ -1,5 +1,5 @@
 # "Paste in the packagecloud.io token that came with your license file."
-token = "3fd7af45553d9efb02f4d6cf7d9d693566e92b332039c370"
+token = ""
 
 # "The AWS Region to deploy in"
 region = "us-east-1"
@@ -20,10 +20,10 @@ instance_type = "t3.xlarge"
 public = true
 
 # "The name of then public SSH key to be deployed to the servers. This must exist in AWS already"
-ssh_key_name = "PeterG"
+ssh_key_name = ""
 
 # "The VPC to be used. Instance will be allocated to first subnet unless subnet is also set"
-vpc = "vpc-0206e948abadc6a29"
+vpc = ""
 
 # "(optional) Set a specific subnet. If left blank the first subnet in the VPC will be used"
 subnet = ""
