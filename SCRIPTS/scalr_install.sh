@@ -113,6 +113,7 @@ detect_os
 if which apt-get 2> /dev/null; then
   STEP="curl to download repo"
   curl -s https://${TOKEN}:@packagecloud.io/install/repositories/scalr/${REPO}/script.deb.sh | bash
+  
 
   STEP="apt-get install scalr-server"
   apt-get install -y scalr-server

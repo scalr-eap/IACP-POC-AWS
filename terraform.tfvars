@@ -1,5 +1,5 @@
 # "Paste in the packagecloud.io token that came with your license file."
-token = "{token}"
+token = "3fd7af45553d9efb02f4d6cf7d9d693566e92b332039c370"
 
 # "The AWS Region to deploy in"
 region = "us-east-1"
@@ -23,13 +23,13 @@ public = true
 ssh_key_name = "PeterG"
 
 # "The VPC to be used. Instance will be allocated to first subnet unless subnet is also set"
-vpc = "{vpc}"
+vpc = "vpc-0206e948abadc6a29"
 
 # "(optional) Set a specific subnet. If left blank the first subnet in the VPC will be used"
 subnet = ""
 
 # "1-3 char prefix for instance names
-name_prefix = "p99"
+name_prefix = "scalr4"
 
 # "Map of tags. Comment out if no tags needed".
 tags = {
